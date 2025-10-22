@@ -126,6 +126,7 @@ def apply_convolution(image,kernel):
     pad_h,pad_w=k_h//2,k_w//2
     padded=np.pad(image,((pad_h,pad_h),(pad_w,pad_w)),mode='reflect')
     output=np.zeros_like(image,dtype=np.float64)
+    kernel=np.flip(kernel)
     for i in range(img_h):
         for j in range(img_w):
             s=0.0
@@ -193,6 +194,26 @@ print(f"\nManual Otsu Threshold: {otsu_thresh}")
 cv2_imshow(thresh_manual)
 cv2.imwrite('step3_thresh_manual.jpg', thresh_manual)
 
+
+ret1,thresh=cv2.threshold(blurred_cells,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+print(f"Otsu Threshold: {ret1}")
+cv2_imshow(thresh)
+cv2.imwrite('thresh.jpg', thresh)
+
+plt.figure(figsize=(12,6))
+
+plt.subplot(1, 2, 1)
+plt.imshow(thresh_manual, cmap='gray')
+plt.title("Manual Otsu")
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.imshow(thresh, cmap='gray')
+plt.title("built-in otsu")
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
 
 
 se=np.ones((3,3),np.uint8)
@@ -274,5 +295,4 @@ count2,labels2=cv2.connectedComponents(closing,connectivity=8)
 
 print(f"built-in count: {count2}")
 print(f"\nDifference: {abs(count-count2)}")
-
 
